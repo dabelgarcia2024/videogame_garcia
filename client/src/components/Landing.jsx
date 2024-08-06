@@ -1,10 +1,10 @@
 import React from 'react';
 import { Link } from 'react-router-dom';
-import styles from './LandingPage.module.css';
+import styles from './Landing.module.css';
 
-const LandingPage = () => {
+const Landing = () => {
   return (
-    <div className={styles.landingContainer}>
+    <div className={styles.container}>
       <h1>Welcome to the Videogames App</h1>
       <Link to="/home">
         <button className={styles.enterButton}>Enter</button>
@@ -13,4 +13,4 @@ const LandingPage = () => {
   );
 };
 
-export default LandingPage;
+export default Landing;

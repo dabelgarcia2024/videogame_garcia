@@ -1,33 +1,29 @@
-// src/components/SearchBar/SearchBar.jsx
-
 import React, { useState } from 'react';
 import { useDispatch } from 'react-redux';
-import { searchVideogames } from '../actions';
+import { getVideogamesByName } from '../../actions';
 import styles from './SearchBar.module.css';
 
 const SearchBar = () => {
-  const [query, setQuery] = useState('');
+  const [name, setName] = useState('');
   const dispatch = useDispatch();
 
   const handleInputChange = (e) => {
-    setQuery(e.target.value);
+    setName(e.target.value);
   };
 
   const handleSubmit = (e) => {
     e.preventDefault();
-    if (query.trim()) {
-      dispatch(searchVideogames(query));
-    }
+    dispatch(getVideogamesByName(name));
   };
 
   return (
-    <form onSubmit={handleSubmit} className={styles.searchBar}>
+    <form onSubmit={handleSubmit} className={styles.form}>
       <input
         type="text"
-        value={query}
+        value={name}
         onChange={handleInputChange}
-        placeholder="Search for a videogame..."
         className={styles.input}
+        placeholder="Search videogames..."
       />
       <button type="submit" className={styles.button}>Search</button>
     </form>
