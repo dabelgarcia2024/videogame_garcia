@@ -2,9 +2,7 @@ const express = require('express');
 const cookieParser = require('cookie-parser');
 const bodyParser = require('body-parser');
 const morgan = require('morgan');
-const routes = require('./routes/index.js');
-const videogamesRouter = require('./routes/videogames');
-const genresRouter = require('./routes/genres');
+const routes = require('./routes/index.js'); // Asegúrate de que la ruta es correcta
 
 require('./db.js');
 
@@ -35,3 +33,4 @@ server.use((err, req, res, next) => { // eslint-disable-line no-unused-vars
 });
 
 module.exports = server;
+

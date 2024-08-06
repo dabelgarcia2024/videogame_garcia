@@ -1,10 +1,14 @@
 const { Router } = require('express');
 const { Genre } = require('../models');
-const axios = require('axios');
 const router = Router();
 
 router.get('/', async (req, res) => {
-  // Lógica para obtener todos los géneros
+  try {
+    const genre = await Genre.findAll();
+    res.json(genre);
+  } catch (error) {
+    res.status(500).json({ message: 'Error al obtener los géneros' });
+  }
 });
 
 module.exports = router;

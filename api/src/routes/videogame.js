@@ -6,22 +6,23 @@ const router = Router();
 const API_KEY = process.env.API_KEY;
 const API_URL = 'https://api.rawg.io/api/games';
 
+// Rutas para obtener videojuegos
 router.get('/', async (req, res) => {
   try {
     const apiResponse = await axios.get(`${API_URL}?key=${API_KEY}`);
     const apiVideogames = apiResponse.data.results.map(game => ({
       id: game.id,
       name: game.name,
-      description: game.description,
+      description: game.description_raw,
       platforms: game.platforms.map(p => p.platform.name),
       image: game.background_image,
       releaseDate: game.released,
       rating: game.rating,
-      genres: game.genres.map(g => g.name)
+      genres: game.genres.map(g => g.name),
     }));
 
     const dbVideogames = await Videogame.findAll({
-      include: Genre
+      include: Genre,
     });
 
     const formattedDbVideogames = dbVideogames.map(game => ({
@@ -32,7 +33,7 @@ router.get('/', async (req, res) => {
       image: game.image,
       releaseDate: game.releaseDate,
       rating: game.rating,
-      genres: game.genres.map(g => g.name)
+      genres: game.genres.map(g => g.name),
     }));
 
     const allVideogames = [...apiVideogames, ...formattedDbVideogames];
@@ -42,12 +43,13 @@ router.get('/', async (req, res) => {
   }
 });
 
+// Ruta para obtener detalles de un videojuego específico
 router.get('/:idVideogame', async (req, res) => {
   const { idVideogame } = req.params;
   try {
     if (idVideogame.includes('-')) { // UUID v4 from DB
       const videogame = await Videogame.findByPk(idVideogame, {
-        include: Genre
+        include: Genre,
       });
       if (!videogame) {
         return res.status(404).json({ message: 'Videojuego no encontrado en la base de datos' });
@@ -60,7 +62,7 @@ router.get('/:idVideogame', async (req, res) => {
         image: videogame.image,
         releaseDate: videogame.releaseDate,
         rating: videogame.rating,
-        genres: videogame.genres.map(g => g.name)
+        genres: videogame.genres.map(g => g.name),
       };
       return res.json(formattedGame);
     } else {
@@ -74,7 +76,7 @@ router.get('/:idVideogame', async (req, res) => {
         image: game.background_image,
         releaseDate: game.released,
         rating: game.rating,
-        genres: game.genres.map(g => g.name)
+        genres: game.genres.map(g => g.name),
       };
       return res.json(formattedGame);
     }
@@ -83,6 +85,7 @@ router.get('/:idVideogame', async (req, res) => {
   }
 });
 
+// Ruta para buscar videojuegos por nombre
 router.get('/name', async (req, res) => {
   const { name } = req.query;
   try {
@@ -90,21 +93,21 @@ router.get('/name', async (req, res) => {
     const apiVideogames = apiResponse.data.results.slice(0, 15).map(game => ({
       id: game.id,
       name: game.name,
-      description: game.description,
+      description: game.description_raw,
       platforms: game.platforms.map(p => p.platform.name),
       image: game.background_image,
       releaseDate: game.released,
       rating: game.rating,
-      genres: game.genres.map(g => g.name)
+      genres: game.genres.map(g => g.name),
     }));
 
     const dbVideogames = await Videogame.findAll({
       where: {
         name: {
-          [Op.iLike]: `%${name}%`
-        }
+          [Op.iLike]: `%${name}%`,
+        },
       },
-      include: Genre
+      include: Genre,
     });
 
     const formattedDbVideogames = dbVideogames.map(game => ({
@@ -115,7 +118,7 @@ router.get('/name', async (req, res) => {
       image: game.image,
       releaseDate: game.releaseDate,
       rating: game.rating,
-      genres: game.genres.map(g => g.name)
+      genres: game.genres.map(g => g.name),
     }));
 
     const allVideogames = [...apiVideogames, ...formattedDbVideogames];
@@ -135,3 +138,4 @@ router.post('/', async (req, res) => {
 });
 
 module.exports = router;
+
