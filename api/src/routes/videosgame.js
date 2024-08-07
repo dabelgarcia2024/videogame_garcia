@@ -131,7 +131,31 @@ router.get('/name', async (req, res) => {
 });
 
 router.post('/', async (req, res) => {
-  // Lógica para crear un nuevo videojuego
+  const { name, description, platforms, image, releaseDate, rating, genres } = req.body;
+
+  try {
+    const newVideogame = await Videogame.create({
+      name,
+      description,
+      platforms,
+      image,
+      releaseDate,
+      rating
+    });
+
+    const genreInstances = await Genre.findAll({
+      where: {
+        name: genres
+      }
+    });
+
+    await newVideogame.addGenres(genreInstances);
+
+    res.status(201).json(newVideogame);
+  } catch (error) {
+    res.status(500).json({ error: error.message });
+  }
 });
+
 
 module.exports = router;
